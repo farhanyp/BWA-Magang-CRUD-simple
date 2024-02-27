@@ -7,21 +7,27 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, Link, useForm } from '@inertiajs/react';
 
-const FormCategory = ({ auth, category }) => {
-    const { data, setData, put, processing, errors, reset } = useForm({
-        name: category.name,
+const FormCategory = ({ auth }) => {
+    const { data, setData, post, processing, errors, reset } = useForm({
+        name: '',
     });
 
     const submit = (e) => {
         e.preventDefault();
 
-        put(route('form.category.update', { id: category.id, name: data.name }));
+        const regex = /^[a-zA-Z\s]+$/;
+        if (!regex.test(data.name)) {
+            alert('Hanya huruf yang diperbolehkan untuk nama.');
+            return;
+        }
+
+        post(route('form.category.store'));
     };
 
   return (
     <AuthenticatedLayout
         user={auth.user}
-        header={<h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Edit Form Category</h2>}>
+        header={<h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Form Category</h2>}>
             <div className="py-12">
                 <div className="max-w-xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -47,7 +53,7 @@ const FormCategory = ({ auth, category }) => {
                                 <div className="flex items-center justify-end mt-4">
 
                                     <PrimaryButton className="ms-4" disabled={processing}>
-                                        Edit
+                                        Create Category
                                     </PrimaryButton>
                                 </div>
                             </form>

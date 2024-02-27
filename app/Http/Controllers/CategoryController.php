@@ -8,6 +8,8 @@ use Illuminate\Log\Logger;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class CategoryController extends Controller
 {
@@ -21,12 +23,22 @@ class CategoryController extends Controller
     }
 
     public function create(){
-        return Inertia::render('Auth/FormCategory');
+        return Inertia::render('Auth/Category/FormCategory');
     }
 
     public function store(Request $request){
-        $data = $request->all();
 
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+        ]);
+
+        
+        if ($validator->fails()) {
+            throw ValidationException::withMessages($validator->errors()->toArray());
+        }
+
+        $data = $request->all();
+        
         Category::create([
             'id' => Str::uuid(),
             'name' => $data['name']
@@ -39,12 +51,21 @@ class CategoryController extends Controller
         
         $category = Category::query()->find($id);
 
-        return Inertia::render('Auth/EditFormCategory',[
+        return Inertia::render('Auth/Category/EditFormCategory',[
             'category' => $category
         ]);
     }
 
     public function update(Request $request, $id){
+        
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+        ]);
+
+        
+        if ($validator->fails()) {
+            throw ValidationException::withMessages($validator->errors()->toArray());
+        }
 
         $data = $request->all();
         $category = Category::query()->find($id);

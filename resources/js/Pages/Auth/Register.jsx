@@ -5,6 +5,7 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, Link, useForm } from '@inertiajs/react';
+import { FcGoogle } from 'react-icons/fc';
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -13,6 +14,8 @@ export default function Register() {
         password: '',
         password_confirmation: '',
     });
+
+    console.log(errors)
 
     useEffect(() => {
         return () => {
@@ -30,7 +33,7 @@ export default function Register() {
         <GuestLayout>
             <Head title="Register" />
 
-            <form onSubmit={submit}>
+            <form onSubmit={submit} className="w-[400px]">
                 <div>
                     <InputLabel htmlFor="name" value="Name" />
 
@@ -42,7 +45,7 @@ export default function Register() {
                         autoComplete="name"
                         isFocused={true}
                         onChange={(e) => setData('name', e.target.value)}
-                        required
+                        
                     />
 
                     <InputError message={errors.name} className="mt-2" />
@@ -59,7 +62,7 @@ export default function Register() {
                         className="mt-1 block w-full"
                         autoComplete="username"
                         onChange={(e) => setData('email', e.target.value)}
-                        required
+                        
                     />
 
                     <InputError message={errors.email} className="mt-2" />
@@ -76,7 +79,7 @@ export default function Register() {
                         className="mt-1 block w-full"
                         autoComplete="new-password"
                         onChange={(e) => setData('password', e.target.value)}
-                        required
+                        
                     />
 
                     <InputError message={errors.password} className="mt-2" />
@@ -93,7 +96,7 @@ export default function Register() {
                         className="mt-1 block w-full"
                         autoComplete="new-password"
                         onChange={(e) => setData('password_confirmation', e.target.value)}
-                        required
+                        
                     />
 
                     <InputError message={errors.password_confirmation} className="mt-2" />
@@ -112,6 +115,12 @@ export default function Register() {
                     </PrimaryButton>
                 </div>
             </form>
+
+            <div className='flex justify-center text-gray-100 my-5'>---------- OR ----------</div>
+
+            <div className='w-full rounded-lg bg-gray-900 text-gray-100 flex gap-5 py-2 justify-center items-center font-medium'>
+                <FcGoogle height={30}/> <a href="/auth/google/redirect">Login with Google</a>
+            </div>
         </GuestLayout>
     );
 }

@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class MenuController extends Controller
 {
@@ -30,7 +32,7 @@ class MenuController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return Inertia::render('Auth/FormMenu',[
+        return Inertia::render('Auth/Menu/FormMenu',[
             'categories' => $categories
         ]);
     }
@@ -40,6 +42,16 @@ class MenuController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            throw ValidationException::withMessages($validator->errors()->toArray());
+        }
+
         $data = $request->all();
         $data['image'] = Storage::disk('public')->put('images', $request->file('image'));
         Menu::create([
@@ -69,7 +81,7 @@ class MenuController extends Controller
         $menu = Menu::query()->find($id);
         $categories = Category::all();
 
-        return Inertia::render('Auth/EditFormMenu',[
+        return Inertia::render('Auth/Menu/EditFormMenu',[
             'menu' => $menu,
             'categories' => $categories
         ]);
@@ -80,6 +92,14 @@ class MenuController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            throw ValidationException::withMessages($validator->errors()->toArray());
+        }
 
         $data = $request->all();
         $menu = Menu::query()->find($id);

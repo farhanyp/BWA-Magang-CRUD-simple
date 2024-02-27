@@ -16,6 +16,12 @@ const FormCategory = ({ auth, categories }) => {
     const submit = (e) => {
         e.preventDefault();
 
+        const regex = /^[a-zA-Z\s]+$/;
+        if (!regex.test(data.name)) {
+            alert('Hanya huruf yang diperbolehkan untuk nama.');
+            return;
+        }
+
         post(route('menu.index'));
     };
 
@@ -99,7 +105,7 @@ const FormCategory = ({ auth, categories }) => {
                 <div className="flex items-center justify-end mt-4">
 
                     <PrimaryButton className="ms-4" disabled={processing}>
-                        Register
+                        Create Menu
                     </PrimaryButton>
                 </div>
             </form>
